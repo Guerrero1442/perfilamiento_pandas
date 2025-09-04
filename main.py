@@ -15,9 +15,10 @@ def load_data(file: str, file_type: str, delimiter=None) -> pd.DataFrame:
             return pd.read_csv(file, delimiter=delimiter, encoding='latin1')
     elif file_type == 'excel':
         return pd.read_excel(file, dtype=str)
+    elif file_type == 'parquet':
+        return pd.read_parquet(file)
     else:
         raise ValueError('Tipo de archivo no soportado')
-
 
 def generate_report(data: pd.DataFrame, title: str, output_file: str, minimal: bool, explorative: bool) -> ProfileReport:
     profile = ProfileReport(
