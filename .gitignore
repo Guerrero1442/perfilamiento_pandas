@@ -1,4 +1,17 @@
-# Ignorando entorno virtual
-/env
+# Entornos virtuales
+env/
+.venv/
+venv/
 
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# IDE
 .vscode/
+
+# Variables de entorno y reportes generados
+.env
+output/
+*.html

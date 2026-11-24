@@ -1,0 +1,21 @@
+[project]
+name = "perfilamiento-pandas"
+version = "0.2.0"
+description = "Herramienta para perfilamiento exploratorio automático de datos con ydata-profiling."
+readme = "readme.md"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "openpyxl>=3.1.2",
+    "pandas>=2.2.0",
+    "pyarrow>=15.0.0",
+    "setuptools<81",  # Requerido por ydata-profiling (pkg_resources) en Python 3.12+
+    "ydata-profiling>=4.6.4",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
