@@ -1,77 +1,81 @@
-# Proyecto de Perfilamiento de Datos con Pandas Profiling
+# Perfilamiento de Datos con ydata-profiling
 
-Este proyecto utiliza `pandas-profiling` para realizar un análisis exploratorio de datos de manera automática.
+Herramienta en Python para generar reportes automáticos de análisis exploratorio de datos (EDA) en HTML usando [`ydata-profiling`](https://docs.profiling.ydata.ai/).
 
-## Instalación de Dependencias
+Soporta archivos **CSV**, **TXT**, **Excel (`.xlsx`, `.xls`)** y **Parquet**, con detección automática de formato, delimitador y codificación, además de muestreo opcional para archivos grandes.
 
-Para instalar las dependencias del proyecto, sigue los siguientes pasos:
+## Requisitos e instalación con `uv`
 
-1. Clona el repositorio en tu máquina local:
-    ```sh
-    git clone <URL_DEL_REPOSITORIO>
-    cd <NOMBRE_DEL_REPOSITORIO>
-    ```
+1. Instala [`uv`](https://docs.astral.sh/uv/getting-started/installation/) si aún no lo tienes.
+2. Clona el repositorio e instala las dependencias desde `pyproject.toml`:
 
-2. Crea un entorno virtual con `venv`:
-    ```sh
-    python -m venv venv
-    ```
-
-3. Activa el entorno virtual:
-
-    - En Windows:
-        ```sh
-        .\venv\Scripts\activate
-        ```
-    - En macOS y Linux:
-        ```sh
-        source venv/bin/activate
-        ```
-
-4. Instala las dependencias requeridas:
-    ```sh
-    pip install -r requirements.txt
-    ```
+```sh
+git clone <URL_DEL_REPOSITORIO>
+cd perfilamiento_pandas
+uv sync
+```
 
 ## Uso
 
-Para ejecutar el perfilamiento de datos, simplemente ejecuta el script principal:
+### Modo interactivo (con selector gráfico de archivos)
+
+Ejecuta el script sin argumentos:
+
 ```sh
-python main.py
+uv run main.py
 ```
 
-### Selecciona el archivo de datos
-Al iniciar el script, se abrirá una ventana emergente para seleccionar el archivo de datos que deseas analizar. Asegúrate de elegir un archivo en formato compatible (`csv`, `txt`, `excel`).
+El asistente te guiará paso a paso:
+1. Selecciona el archivo en la ventana emergente (`.csv`, `.txt`, `.xlsx`, `.xls`, `.parquet`).
+2. El tipo de archivo se detecta automáticamente por su extensión.
+3. Si es `CSV` o `TXT`, puedes indicar el delimitador (`,`, `;`, `|`, `\t`) o presionar **Enter** para autodetectarlo.
+4. Si es `Excel`, puedes elegir el nombre/índice de la hoja y si deseas leer todas las columnas como texto.
+5. Elige el modo del reporte:
+   - `minimal`: rápido y ligero (recomendado para tablas grandes).
+   - `estandar`: balance entre detalle y velocidad.
+   - `explorativo`: análisis profundo (correlaciones, interacciones y alertas detalladas).
+6. Opcionalmente indica un tamaño de muestra en filas, título del reporte y carpeta de salida.
 
-### Especifica el tipo de archivo
-Luego de seleccionar el archivo, ingresa el tipo de archivo cuando el script te lo pida:
-- `csv` para archivos de tipo CSV.
-- `txt` para archivos de texto.
-- `excel` para archivos de Excel.
+### Modo CLI (automatización sin ventana emergente)
 
-### Ingresa el delimitador (opcional)
-Si seleccionaste un archivo `CSV` o `TXT`, se te pedirá el delimitador utilizado en el archivo (por ejemplo, `,` para CSV o `\t` para archivos delimitados por tabulaciones). Si es un archivo `Excel`, puedes omitir este paso.
+```sh
+uv run main.py --file datos.csv --mode minimal --title "Reporte Ventas" --output ./reportes
+```
 
-### Determina la profundidad del análisis
-El script te preguntará si deseas una exploración profunda. Responde `sí` para un análisis exhaustivo o `no` para un análisis estándar, según tus necesidades.
+Ejemplos adicionales:
 
-### Selecciona el nivel de detalle del reporte
-Puedes optar por un reporte minimalista si solo necesitas un análisis básico. Responde `sí` para un reporte minimalista o `no` para un reporte completo.
+```sh
+# Archivo delimitado por tabulaciones con muestreo de 50,000 filas sin abrir el navegador
+uv run main.py -f datos.txt -d "\t" --sample 50000 --no-open
 
-### Asigna un título al reporte
-Ingresa un título que describa el contenido del reporte, el cual se reflejará en el archivo HTML generado.
+# Hoja específica de Excel preservando todas las columnas como texto
+uv run main.py -f archivo.xlsx --sheet "Hoja2" --as-str -m explorativo
 
-### Define la ruta de salida del archivo
-Especifica la ubicación donde deseas guardar el reporte HTML. Si la ruta no existe, el archivo se guardará en la ubicación predeterminada (`G:\Mi unidad\Requerimientos_Demanda\Requerimientos`).
+# Ver todas las opciones disponibles
+uv run main.py --help
+```
 
-### Generación y apertura automática del reporte
-Después de ingresar todos los parámetros, el script generará el reporte HTML en la ubicación seleccionada y lo abrirá automáticamente en el navegador predeterminado.
+### Ruta de salida predeterminada
 
+Si no indicas carpeta de salida (o la ruta ingresada no existe en modo interactivo), el script busca en este orden:
+1. La variable de entorno `PROFILING_OUTPUT_DIR` (si apunta a un directorio existente).
+2. La ruta corporativa por defecto (`G:\Mi unidad\Requerimientos_Demanda\Requerimientos`), si existe.
+3. La misma carpeta del archivo de entrada.
 
-## Contribuciones
+## Pruebas
 
-Las contribuciones son bienvenidas. Por favor, abre un issue o un pull request para discutir cualquier cambio que desees realizar.
+Para ejecutar la suite de pruebas unitarias:
+
+```sh
+uv run pytest
+```
+
+o usando `unittest` directamente:
+
+```sh
+uv run python -m unittest discover -s tests -v
+```
 
 ## Licencia
 
-Este proyecto está licenciado bajo los términos de la licencia MIT.
+Este proyecto está licenciado bajo la licencia MIT.
